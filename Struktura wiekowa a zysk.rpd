@@ -1,0 +1,64 @@
+[SRC: mgr farm. Filip Klima]
+[DESC:Struktura wiekowa a zysk]
+[RAPOK:1]
+[IDRPDF:0]
+[NAZWNAD:]
+[RODZJ:1]
+[MINBD:3.0.10.33601]
+[FUNWZ:NNTTTTNNTNNTTTNTTTTTNN]
+[NRGRP:5]
+Struktura wiekowa zysk&*SQL&*&*&*&*/*
+SZEROKOSC=[0,0,0,0,0,0,0,0,0]
+FORMAT_KOLUMNY_9=[0.00]
+FORMAT_KOLUMNY_8=[0.00]
+FORMAT_KOLUMNY_7=[0.00]
+FORMAT_KOLUMNY_6=[0.00]
+FORMAT_KOLUMNY_5=[0.00]
+FORMAT_KOLUMNY_4=[0.00]
+FORMAT_KOLUMNY_3=[0.00]
+FORMAT_KOLUMNY_2=[0.00]
+FORMAT_KOLUMNY_1=[0.00]
+KOLUMNA_LP=[0]
+ROZDZIAL_WIERSZY=[0]
+WYSOKOSC_NAGLOWKA=[1]
+WYROWNANIE_NAGLOWKA=[0]
+WYROWNANIE_TABELKI=[0]
+RAMKA=[1]
+WIZYTOWKA=[0]
+*/
+
+
+select  
+sum(case when a.wiek<18 then a.zysk end) as u18,
+sum(case when a.wiek between  18 and 30 then a.zysk end) as od18do30 ,
+sum(case when a.wiek between  30 and 45 then a.zysk end) as od30do45 ,
+sum(case when a.wiek between  45 and 55 then a.zysk end) as od45do55 ,
+sum(case when a.wiek between  55 and 65 then a.zysk end) as od55do65,
+sum(case when a.wiek between  65 and 75 then a.zysk end) as od65do75 ,
+sum(case when a.wiek between  75 and 120 then a.zysk end) as od75 ,
+sum(case when a.wiek >120 or a.wiek is null then a.zysk end) as BrakDanych ,
+sum (a.zysk) as Total
+
+
+
+  from
+
+
+(SELECT 
+s.datur, 
+(EXTRACT (year FROM s.datur)) as rokUr, 
+(EXTRACT (year FROM s.datsp)) as rokSp, 
+((EXTRACT (year FROM s.datsp)) - (EXTRACT (year FROM s.datur))) as wiek,
+(s.CENAZ*s.ilosp)as zakup, 
+(s.CENDN*s.ilosp) as sprzedaz, 
+((s.CENDN-s.CENAZ)*s.ilosp)  as zysk
+
+FROM SPRZ s 
+where 
+s.id>0 and 
+s.bufor=0 and 
+s.wskus=0 and
+datsp between :DATAOD and :DATADO ) a
+&*
+
+&*&*&*1&*
